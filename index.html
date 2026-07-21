@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="color-scheme" content="light dark">
+<title>逐玉 OST Lyrics</title>
+<style>
+  :root{
+    color-scheme:light dark;
+    --safe-t:env(safe-area-inset-top,0px);
+    --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  :root, html[data-theme="light"]{
+    --bg:#fbfaf7; --card:#fbfaf7; --ink:#1a1a1a;
+    --pinyin:#8a6d3b; --en:#5b6470; --rule:#e8e4da; --accent:#7c3a2d;
+    --bar-bg:rgba(251,250,247,0.92);
+    --chip-off:#efece4; --chip-off-ink:#9a958a;
+    --chip-on:#7c3a2d; --chip-on-ink:#ffffff; --end:#b9b3a6;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#121110; --card:#121110; --ink:#ece7dd;
+      --pinyin:#c9a86a; --en:#9aa2ad; --rule:#2a2724; --accent:#e0956f;
+      --bar-bg:rgba(18,17,16,0.9);
+      --chip-off:#26231f; --chip-off-ink:#7d766b;
+      --chip-on:#e0956f; --chip-on-ink:#1a1512; --end:#4a4640;
+    }
+  }
+  html[data-theme="dark"]{
+    --bg:#121110; --card:#121110; --ink:#ece7dd;
+    --pinyin:#c9a86a; --en:#9aa2ad; --rule:#2a2724; --accent:#e0956f;
+    --bar-bg:rgba(18,17,16,0.9);
+    --chip-off:#26231f; --chip-off-ink:#7d766b;
+    --chip-on:#e0956f; --chip-on-ink:#1a1512; --end:#4a4640;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Heiti SC","Microsoft YaHei","Segoe UI",system-ui,sans-serif;
+    line-height:1.4;
+    padding-bottom:calc(24px + var(--safe-b));
+    transition:background .2s,color .2s;
+  }
+
+  .bar{
+    position:sticky;top:0;z-index:10;
+    background:var(--bar-bg);
+    -webkit-backdrop-filter:saturate(180%) blur(12px);
+    backdrop-filter:saturate(180%) blur(12px);
+    padding:calc(10px + var(--safe-t)) 16px 10px;
+    border-bottom:1px solid var(--rule);
+  }
+  .titlerow{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:10px;margin-bottom:9px;
+  }
+  .title{font-size:15px;font-weight:600;letter-spacing:.02em;color:var(--accent);}
+  .title .sub{font-size:11px;font-weight:400;color:var(--en);display:block;margin-top:1px;}
+  .theme-btn{
+    flex:none;font-size:16px;line-height:1;
+    padding:8px 10px;border-radius:9px;border:1px solid var(--rule);
+    background:var(--chip-off);color:var(--chip-off-ink);cursor:pointer;
+  }
+
+  .songrow{margin-bottom:8px;}
+  select#song{
+    width:100%;font-size:14px;font-weight:600;
+    padding:10px 12px;border-radius:10px;border:1px solid var(--rule);
+    background:var(--chip-off);color:var(--ink);
+    -webkit-appearance:none;appearance:none;
+  }
+
+  .toggles{display:flex;gap:8px;}
+  .chip{
+    flex:1;font-size:13px;font-weight:600;
+    padding:9px 6px;border-radius:10px;border:none;
+    background:var(--chip-on);color:var(--chip-on-ink);
+    transition:background .15s,color .15s;cursor:pointer;
+  }
+  .chip[aria-pressed="false"]{background:var(--chip-off);color:var(--chip-off-ink);}
+  .chip[hidden]{display:none;}
+
+  main{padding:18px 16px 0;max-width:520px;margin:0 auto;}
+  .stanza{margin-bottom:22px;}
+  .line{padding:2px 0;}
+  .zh{font-size:21px;font-weight:500;letter-spacing:.01em;line-height:1.5;color:var(--ink);}
+  .py{font-size:14px;color:var(--pinyin);font-style:italic;line-height:1.45;margin-top:1px;}
+  .en{font-size:14px;color:var(--en);line-height:1.4;margin-top:2px;}
+  body.hide-py .py{display:none;}
+  body.hide-en .en{display:none;}
+  body.hide-zh .zh{display:none;}
+
+  .end{text-align:center;color:var(--end);font-size:12px;padding:8px 0 4px;letter-spacing:.15em;}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <div class="titlerow">
+      <div class="title" id="title-main">One Thought<span class="sub" id="title-sub">一念 · 逐玉 OST</span></div>
+      <button class="theme-btn" id="theme" aria-label="Toggle light or dark">🌓</button>
+    </div>
+    <div class="songrow">
+      <select id="song" aria-label="Choose song">
+        <option value="yinian">一念 · One Thought</option>
+        <option value="xiaoxin">我对缘分小心翼翼 · Careful with Fate</option>
+      </select>
+    </div>
+    <div class="toggles">
+      <button class="chip" id="t-zh" aria-pressed="true">中文</button>
+      <button class="chip" id="t-py" aria-pressed="true">Pinyin</button>
+      <button class="chip" id="t-en" aria-pressed="true">English</button>
+      <button class="chip" id="t-script" aria-pressed="true">简</button>
+    </div>
+  </div>
+
+  <main id="lyrics"></main>
+  <div class="end">· 终 ·</div>
+
+<script>
+// Diagnostic: surface the real error on-page instead of the browser's masked "Script error."
+window.onerror = function(msg, src, line, col, err){
+  var box = document.createElement('pre');
+  box.style.cssText = 'color:#c0392b;background:#fff;padding:12px;margin:12px;white-space:pre-wrap;font-size:12px;border:1px solid #c0392b;border-radius:8px;';
+  box.textContent = (err && err.stack) ? err.stack : (msg + ' @ line ' + line);
+  (document.body || document.documentElement).insertBefore(box, (document.body||document.documentElement).firstChild);
+  return false;
+};
+
+// SONGS: each line is [simplified, traditional-or-null, pinyin, english]
+// traditional=null means no traditional-script data exists for this line yet.
+const SONGS = {
+  yinian: {
+    title: "One Thought",
+    sub: "一念 · 逐玉 OST",
+    hasTraditional: true,
+    stanzas: [
+      [
+        ["一生风雨 片刻花期","一生風雨 片刻花期","Yī shēng fēng yǔ, piànkè huā qī","A lifetime of storms, for a fleeting season of bloom"],
+        ["极尽芳华成诗 为一场相遇","極盡芳華成詩 為一場相遇","Jí jìn fāng huá chéng shī, wèi yī chǎng xiāng yù","All my radiant years turned into poetry, for the sake of one encounter"]
+      ],
+      [
+        ["一纸相思半世离","一紙相思半世離","Yī zhǐ xiāng sī, bàn shì lí","A page of longing, half a lifetime of separation"],
+        ["燃尽痴狂为你 为一眼灵犀","燃盡痴狂為你 為一眼靈犀","Rán jìn chī kuáng wèi nǐ, wèi yī yǎn líng xī","Burning away all my madness for you, for that one knowing glance"]
+      ],
+      [
+        ["这一生","這一生","Zhè yī shēng","In this lifetime"],
+        ["目所及 耳所栖","目所及 耳所棲","Mù suǒ jí, ěr suǒ qī","All that my eyes see and ears rest upon"],
+        ["生死相抵","生死相抵","Shēng sǐ xiāng dǐ","Is worth life and death itself"]
+      ],
+      [
+        ["这一程","這一程","Zhè yī chéng","On this journey"],
+        ["心所系 皆是你","心所系 皆是你","Xīn suǒ xì, jiē shì nǐ","All that my heart is bound to is you"],
+        ["魂牵又梦系","魂牽又夢系","Hún qiān yòu mèng xì","My soul is drawn to you, my dreams tied to you"]
+      ],
+      [
+        ["这一别","這一別","Zhè yī bié","In this parting"],
+        ["情所钟 爱所惧","情所鍾 愛所懼","Qíng suǒ zhōng, ài suǒ jù","Love is my deepest desire, love is my greatest fear"],
+        ["一念成疾","一念成疾","Yī niàn chéng jí","One lingering thought becomes an illness"]
+      ],
+      [
+        ["我欲与你同归去","我欲與你同歸去","Wǒ yù yǔ nǐ tóng guī qù","I wish to return with you"],
+        ["生死不离","生死不離","Shēng sǐ bù lí","Never parting, in life or in death"]
+      ]
+    ]
+  },
+  xiaoxin: {
+    title: "Careful with Fate",
+    sub: "我对缘分小心翼翼 · JJ Lin (林俊杰) · 逐玉 OST",
+    hasTraditional: true,
+    stanzas: [
+      [
+        ["乱世马蹄 谁还留在风雪里","亂世馬蹄 誰還留在風雪裡","Luànshì mǎtí shuí hái liú zài fēngxuě lǐ","In chaotic times with galloping warhorses, who still remains in the wind and snow?"],
+        ["多少人在命悬一线的距离","多少人在命懸一線的距離","Duōshǎo rén zài mìng xuán yīxiàn de jùlí","How many are on the brink of death?"],
+        ["而家园硝烟起 谁能遗世独立","而家園硝煙起 誰能遺世獨立","Ér jiāyuán xiāoyān qǐ shuí néng yíshì dúlì","As smoke from war rises from our homeland, who can remain untouched by the world?"],
+        ["夕阳隐去 我无语 yeah","夕陽隱去 我無語 Yeah","Xīyáng yǐn qù wǒ wúyǔ yeah","The sunset fades, and I am left speechless."]
+      ],
+      [
+        ["秋色落地 谁轻踩 枫叶而去","秋色落地 誰輕踩 楓葉而去","Qiūsè luòdì shuí qīng cǎi fēngyè ér qù","Autumn falls, who lightly steps over maple leaves and walks away?"],
+        ["梧桐细雨 檐下春燕 衔着泥","梧桐細雨 檐下春燕 銜著泥","Wútóng xìyǔ yánxià chūnyàn xiánzhe ní","In the fine rain by the parasol trees, swallows under the eaves carry mud in their beaks."],
+        ["这古镇的烟火气 为谁不期而遇","這古鎮的煙火氣 為誰不期而遇","Zhè gǔzhèn de yānhuǒ qì wèi shuí bùqī ér yù","In this ancient town's vibrant atmosphere, who meets by chance?"]
+      ],
+      [
+        ["许下生死相依 愿誓言如期","許下生死相依 願誓言如期","Xǔxià shēngsǐ xiāngyī yuàn shìyán rúqī","We vow to stand by each other in life and death, hoping our promise holds true."]
+      ],
+      [
+        ["我对 缘分小心翼翼 不放弃","我對 緣分小心翼翼 不放棄","Wǒ duì yuánfèn xiǎoxīn yìyì bù fàngqì","I treat fate with care, never giving up."],
+        ["无奈 烽火马蹄扰乱了结局","無奈 烽火馬蹄擾亂了結局","Wúnài fēnghuǒ mǎtí rǎoluàn le jiéjú","But helplessly, war and galloping hooves disrupt our ending."]
+      ],
+      [
+        ["红尘 来去断断续续","紅塵 來去斷斷續續","Hóngchén láiqù duànduàn xùxù","In this mortal world, arrivals and departures come in fragments."],
+        ["你转身蹙着眉挥剑离去","你轉身蹙著眉揮劍離去","Nǐ zhuǎnshēn cùzhe méi huī jiàn líqù","You turn away, frowning, and leave with a swing of your sword."],
+        ["也带走所有秘密","也帶走所有祕密","Yě dàizǒu suǒyǒu mìmì","Taking all the secrets with you."]
+      ],
+      [
+        ["我对 缘分小心翼翼 不放弃","我對 緣分小心翼翼 不放棄","Wǒ duì yuánfèn xiǎoxīn yìyì bù fàngqì","I treat fate with care, never giving up."],
+        ["我们 却总在沙场里 烽火相遇","我們 卻總在沙場裡 烽火相遇","Wǒmen què zǒng zài shāchǎng lǐ fēnghuǒ xiāngyù","Yet we always meet again on battlefields amid flames of war"],
+        ["宿命 纠缠中你给的 回忆温润如玉","宿命 糾纏中妳給的 回憶溫潤如玉","Sùmìng jiūchán zhōng nǐ gěi de huíyì wēnrùn rú yù","Entangled by fate, the memories you gave are warm and smooth like jade"],
+        ["经历 无数次的战役","經歷 無數次的戰役","Jīnglì wúshù cì de zhànyì","After experiencing countless battles"],
+        ["如愿 回到初识之地","如願 回到初識之地","Rúyuàn huídào chūshí zhī dì","We finally return to where we first met."]
+      ],
+      [
+        ["雨落地 庙堂谁叹息","雨落地 廟堂誰嘆息","Yǔ luò dì miàotáng shuí tànxī","Rain falls to the ground, who sighs within the temple halls?"],
+        ["等风起 天子守大义","等風起 天子守大義","Děng fēng qǐ tiānzǐ shǒu dàyì","Waiting for the wind to rise, the emperor upholds great righteousness."],
+        ["这世事岂 能尽人意","這世事豈 能盡人意","Zhè shìshì qǐ néng jìn rén yì","How can worldly affairs ever go as one wishes?"],
+        ["语道尽 而你我却不离","語道盡 而妳我卻不離","Yǔ dào jìn ér nǐ wǒ què bù lí","Words may be exhausted, yet you and I remain inseparable."]
+      ],
+      [
+        ["风飘零 爱怎么证明","風飄零 愛怎麼證明","Fēng piāolíng ài zěnme zhèngmíng","As the wind scatters, how can love be proven?"],
+        ["雨打萍 选择去相信","雨打萍 選擇去相信","Yǔ dǎ píng xuǎnzé qù xiāngxìn","Like rain striking duckweed, we choose to believe."],
+        ["走过边境 语气更坚定","走過邊境 語氣更堅定","Zǒuguò biānjìng yǔqì gèng jiāndìng","Crossing borders, our voices grow more resolute."],
+        ["彼此信守 我们的初心 woo","彼此信守 我們的初心 Woo","Bǐcǐ xìnshǒu wǒmen de chūxīn woo","We hold fast to our original promise together."]
+      ],
+      [
+        ["我对 缘分小心翼翼 不放弃","我對 緣分小心翼翼 不放棄","Wǒ duì yuánfèn xiǎoxīn yìyì bù fàngqì","I treat fate with care and never give up."],
+        ["无奈 烽火马蹄扰乱 了结局","無奈 烽火馬蹄擾亂 了結局","Wúnài fēnghuǒ mǎtí rǎoluàn le jiéjú","But helplessly, war and galloping hooves disrupt our ending."],
+        ["天涯 何处能遮风雨 何处能够在一起","天涯 何處能遮風雨 何處能夠在一起","Tiānyá héchù néng zhē fēngyǔ héchù nénggòu zài yìqǐ","At the edge of the world, where can we shelter from the storm? Where can we be together?"],
+        ["心平静 聆听 远方横笛你 在哪里","心平靜 聆聽 遠方橫笛你 在哪裡","Xīn píngjìng língtīng yuǎnfāng héngdí nǐ zài nǎlǐ","With a calm heart, I listen to the distant flute, where are you?"]
+      ],
+      [
+        ["我对 缘分小心翼翼 不放弃","我對 緣分小心翼翼 不放棄","Wǒ duì yuánfèn xiǎoxīn yìyì bù fàngqì","I treat fate with care, never giving up."],
+        ["我们 却总在沙场里 烽火相遇 yeah~","我們 卻總在沙場裡 烽火相遇 Yeah~","Wǒmen què zǒng zài shāchǎng lǐ fēnghuǒ xiāngyù yeah","Yet we always meet on battlefields amid flames of war"],
+        ["知道 前方狂风骤雨 也迎面走过去","知道 前方狂風驟雨 也迎面走過去","Zhīdào qiánfāng kuángfēng zhòuyǔ yě yíngmiàn zǒu guòqù","Knowing fierce storms lie ahead, we face them head-on"],
+        ["我们 坚持收复失地","我們 堅持收復失地","Wǒmen jiānchí shōufù shīdì","We persist in reclaiming lost ground,"],
+        ["无惧 敌人的来袭","無懼 敵人的來襲","Wújù dírén de láixí","unafraid of the enemy's attack."],
+        ["来袭","來襲","Láixí","Their assault."]
+      ]
+    ]
+  }
+};
+
+const root = document.getElementById('lyrics');
+const scriptBtn = document.getElementById('t-script');
+let currentSong = 'yinian';
+let showSimplified = true; // true=简, false=繁
+
+function render(){
+  const song = SONGS[currentSong];
+  document.getElementById('title-main').innerHTML = song.title + '<span class="sub">' + song.sub + '</span>';
+
+  // script toggle only meaningful when the song has traditional data
+  scriptBtn.hidden = !song.hasTraditional;
+
+  root.innerHTML = '';
+  song.stanzas.forEach(stanza=>{
+    const s=document.createElement('div');
+    s.className='stanza';
+    stanza.forEach(([zhS,zhT,py,en])=>{
+      const l=document.createElement('div');
+      l.className='line';
+      const dz=document.createElement('div');
+      dz.className='zh';
+      const useTrad = song.hasTraditional && !showSimplified && zhT;
+      dz.textContent = useTrad ? zhT : zhS;
+      const dp=document.createElement('div'); dp.className='py'; dp.textContent=py;
+      const de=document.createElement('div'); de.className='en'; de.textContent=en;
+      l.appendChild(dz); l.appendChild(dp); l.appendChild(de);
+      s.appendChild(l);
+    });
+    root.appendChild(s);
+  });
+}
+
+document.getElementById('song').addEventListener('change', (e)=>{
+  currentSong = e.target.value;
+  render();
+});
+
+function wire(id,cls){
+  const btn=document.getElementById(id);
+  btn.addEventListener('click',()=>{
+    const on=btn.getAttribute('aria-pressed')==='true';
+    btn.setAttribute('aria-pressed',String(!on));
+    document.body.classList.toggle(cls,on);
+  });
+}
+wire('t-zh','hide-zh');
+wire('t-py','hide-py');
+wire('t-en','hide-en');
+
+scriptBtn.addEventListener('click',()=>{
+  showSimplified = !showSimplified;
+  scriptBtn.setAttribute('aria-pressed', String(showSimplified));
+  scriptBtn.textContent = showSimplified ? '简' : '繁';
+  render();
+});
+
+const tbtn=document.getElementById('theme');
+const states=[null,'light','dark'];
+let idx=0;
+tbtn.addEventListener('click',()=>{
+  idx=(idx+1)%3;
+  const v=states[idx];
+  if(v===null){ document.documentElement.removeAttribute('data-theme'); tbtn.textContent='🌓'; }
+  else if(v==='light'){ document.documentElement.setAttribute('data-theme','light'); tbtn.textContent='☀️'; }
+  else { document.documentElement.setAttribute('data-theme','dark'); tbtn.textContent='🌙'; }
+});
+
+render();
+</script>
+</body>
+</html>
